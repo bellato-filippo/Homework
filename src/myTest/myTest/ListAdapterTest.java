@@ -52,12 +52,54 @@ public class ListAdapterTest {
         assertEquals(list.indexOf("elemento 3"), 0);
         assertEquals(list.get(1), "elemento 1");
         assertEquals(list.indexOf("elemento 1"), 1);
-        assertEquals(list.get(2), "elemento 3");
+        assertEquals(list.get(2), "elemento 2");
         assertEquals(list.indexOf("elemento 2"), 2);
+        list.add(3, "elemento 4");
+        assertEquals(list.get(3), "elemento 4");
 
         assertThrows(IndexOutOfBoundsException.class, () -> {list.add(-1, "oggetto");});
         assertThrows(IndexOutOfBoundsException.class, () -> {list.add(5, "oggetto");});
         assertThrows(NullPointerException.class, () -> {list.add(1, null);});
+    }
+
+    @Test
+    public void testAddAll(){
+        ListAdapter col = getCollection();
+        assertThrows(NullPointerException.class, () -> {list.addAll(null);});
+        assertTrue(list.addAll(col));
+        assertEquals(list.size(), 10);
+        for (int i = 0; i < 10; i++)
+            assertEquals(list.get(i), "elemento " + i);
+        list.clear();
+        assertTrue(list.add("elemento a"));
+        assertTrue(list.add("elemento b"));
+        assertTrue(list.add("elemento c"));
+        assertTrue(list.addAll(col));
+        assertEquals(list.get(0), "elemento a");
+        assertEquals(list.get(12), "elemento 9");
+        assertEquals(list.indexOf("elemento 0"), 3);
+        ListAdapter col1 = new ListAdapter();
+        assertFalse(list.addAll(col1));
+    }
+
+    @Test
+    public void testAddAllindex(){
+        ListAdapter col = getCollection();
+        assertTrue(list.add("elemento a"));
+        assertTrue(list.add("elemento b"));
+        assertTrue(list.add("elemento c"));
+        ListAdapter col1 = new ListAdapter();
+        assertFalse(list.addAll(col1));
+
+        assertTrue(list.addAll(1, col));
+        assertEquals(list.get(0), "elemento a");
+        assertEquals(list.get(1), "elemento 0");
+        assertEquals(list.get(10), "elemento 9");
+        assertEquals(list.get(11), "elemento b");
+        assertEquals(list.get(12), "elemento c");
+
+        assertThrows(NullPointerException.class, () -> {list.addAll(null);});
+        assertThrows(IndexOutOfBoundsException.class, () -> {list.addAll(25, col);});
     }
 
     private ListAdapter getCollection(){
@@ -66,8 +108,6 @@ public class ListAdapterTest {
             String s = "elemento " + i;
             l.add(s);
         }
-
         return l;
     }
-
 }
