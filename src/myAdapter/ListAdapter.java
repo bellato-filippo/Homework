@@ -91,7 +91,7 @@ public class ListAdapter implements HList{
     }
 
     /**
-     * Removes all of the elements from this list. This list will be empty after this call returns (unless it throws an exception).
+     * Removes all of the elements from this list. This list will be empty after this call returns.
      */
 
     @Override
@@ -99,8 +99,22 @@ public class ListAdapter implements HList{
         vector.removeAllElements();
     }
 
+    /**
+     * Returns true if this list contains the specified element.
+     * @param o - element whose presence in this list is to be tested.
+     * @return true if this list contains the specified element.
+     * @throws NullPointerException - if the specified element is null and this list does not support null elements.
+     */
+
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(Object o) throws NullPointerException{
+        if (o == null)
+            throw new NullPointerException();
+
+        Object[] temp = toArray();
+        for (int i = 0; i < temp.length; i++)
+            if (o.equals(temp[i]))
+                return true;
         return false;
     }
 
