@@ -111,16 +111,27 @@ public class ListAdapter implements HList{
         if (o == null)
             throw new NullPointerException();
 
-        Object[] temp = toArray();
-        for (int i = 0; i < temp.length; i++)
-            if (o.equals(temp[i]))
-                return true;
-        return false;
+        return vector.contains(o);
     }
 
+    /**
+     * Returns true if this list contains all of the elements of the specified collection.
+     * @param c - collection to be checked for containment in this list.
+     * @return true if this list contains all of the elements of the specified collection.
+     * @throws NullPointerException - if the specified collection is null.
+     */
+
     @Override
-    public boolean containsAll(HCollection c) {
-        return false;
+    public boolean containsAll(HCollection c) throws NullPointerException{
+        if (c == null)
+            throw new NullPointerException();
+
+        Object[] temp = c.toArray();
+        for (int i = 0; i < temp.length; i++)
+            if (!vector.contains(temp[i]))
+                return false;
+
+        return true;
     }
 
     /**
