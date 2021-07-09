@@ -167,6 +167,49 @@ public class ListAdapterTest {
         }
 
         assertEquals(list.indexOf("prova"), -1);
+        assertThrows(NullPointerException.class, () -> {list.indexOf(null);});
+    }
+
+    @Test
+    public void testIsEmpty(){
+        assertTrue(list.isEmpty());
+        list.add("elemento");
+        assertFalse(list.isEmpty());
+        list.clear();
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void testLastIdexOf(){
+        list.addAll(getCollection());
+        assertEquals(list.lastIndexOf("elemento 0"), 0);
+        list.add("elemento 0");
+        assertEquals(list.lastIndexOf("elemento 0"), 10);
+        assertEquals(list.lastIndexOf("elemento 12"), -1);
+
+        assertThrows(NullPointerException.class, () -> {list.lastIndexOf(null);});
+    }
+
+    @Test
+    public void testRemoveIndex(){
+        list.addAll(getCollection());
+        assertEquals(list.size(), 10);
+        assertEquals(list.remove(4), "elemento 4");
+        assertEquals(list.size(), 9);
+        assertFalse(list.contains("elemento 4"));
+
+        assertThrows(IndexOutOfBoundsException.class, () -> {list.remove(12);});
+    }
+
+    @Test
+    public void testRemove(){
+        list.addAll(getCollection());
+        assertTrue(list.remove("elemento 0"));
+        assertFalse(list.contains("elemento 0"));
+        assertEquals(list.indexOf("elemento 1"), 0);
+        assertFalse(list.remove("elemento"));
+
+        assertThrows(NullPointerException.class, () -> {list.remove(null);});
     }
 
     private ListAdapter getCollection(){

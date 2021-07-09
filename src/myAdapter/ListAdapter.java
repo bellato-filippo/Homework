@@ -165,6 +165,8 @@ public class ListAdapter implements HList{
 
     @Override
     public Object get(int index) throws IndexOutOfBoundsException{
+        if (index < 0 || index >= size())
+            throw new IndexOutOfBoundsException();
         return vector.elementAt(index);
     }
 
@@ -182,6 +184,9 @@ public class ListAdapter implements HList{
 
     @Override
     public int indexOf(Object o) throws NullPointerException{
+        if (o == null)
+            throw new NullPointerException();
+
         return vector.indexOf(o);
     }
 
@@ -200,9 +205,19 @@ public class ListAdapter implements HList{
         return null;
     }
 
+    /**
+     * Returns the index in this list of the last occurrence of the specified element, or -1 if this list does not contain this element.
+     * @param o - element to search for.
+     * @return the index in this list of the last occurrence of the specified element, or -1 if this list does not contain this element.
+     * @throws NullPointerException - if the specified element is null and this list does not support null elements.
+     */
+
     @Override
-    public int lastIndexOf(Object o) {
-        return 0;
+    public int lastIndexOf(Object o) throws NullPointerException{
+        if (o == null)
+            throw new NullPointerException();
+
+        return vector.lastIndexOf(o);
     }
 
     @Override
@@ -215,14 +230,36 @@ public class ListAdapter implements HList{
         return null;
     }
 
+    /**
+     * Removes the element at the specified position in this list. Shifts any subsequent elements to the left. Returns the element that was removed from the list.
+     * @param index - the index of the element to removed.
+     * @return the element previously at the specified position.
+     * @throws IndexOutOfBoundsException - if the index is out of range (index < 0 || index >= size()).
+     */
+
     @Override
-    public Object remove(int index) {
-        return null;
+    public Object remove(int index) throws IndexOutOfBoundsException{
+        if (index < 0 || index >= size())
+            throw new IndexOutOfBoundsException();
+
+        Object temp = get(index);
+        vector.removeElementAt(index);
+        return temp;
     }
+
+    /**
+     * Removes the first occurrence in this list of the specified element. If this list does not contain the element, it is unchanged.
+     * @param o - element to be removed from this list, if present.
+     * @return true if this list contained the specified element.
+     * @throws NullPointerException - if the specified element is null and this list does not support null elements.
+     */
 
     @Override
     public boolean remove(Object o) {
-        return false;
+        if (o == null)
+            throw new NullPointerException();
+
+        return vector.remove(o);
     }
 
     @Override
