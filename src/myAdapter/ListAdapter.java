@@ -135,6 +135,28 @@ public class ListAdapter implements HList{
     }
 
     /**
+     * Compares the specified object with this list for equality. Returns true if and only if the specified object is also a list, both lists have the same size, and all corresponding pairs of elements in the two lists are equal.
+     * @param o - the object to be compared for equality with this list.
+     * @return true if the specified object is equal to this list.
+     */
+
+    public boolean equals(Object o){
+        if (!(o instanceof HList))
+            return false;
+
+        ListAdapter list = (ListAdapter) o;
+
+        if (size() != list.size())
+            return false;
+
+        for (int i = 0; i < size(); i++)
+            if (!list.get(i).equals(this.get(i)))
+                return false;
+
+        return true;
+    }
+
+    /**
      * Returns the element at the specified position in this list.
      * @param index - index of element to return.
      * @return the element at the specified position in this list.

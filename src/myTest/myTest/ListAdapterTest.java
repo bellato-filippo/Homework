@@ -138,6 +138,37 @@ public class ListAdapterTest {
         assertFalse(list.containsAll(l));
     }
 
+    @Test
+    public void testEquals(){
+        Object[] temp = list.toArray();
+        assertFalse(list.equals(temp));
+        list.addAll(getCollection());
+        ListAdapter l = new ListAdapter();
+        assertFalse(list.equals(l));
+        l.addAll(getCollection());
+        assertTrue(list.equals(l));
+    }
+
+    @Test
+    public void testGet(){
+        list.addAll(getCollection());
+        for (int i = 0; i < 10; i++)
+            assertEquals(list.get(i), "elemento " + i);
+
+        assertThrows(IndexOutOfBoundsException.class, () -> {list.get(15);});
+    }
+
+    @Test
+    public void testIndexOf(){
+        list.addAll(getCollection());
+        for (int i = 0; i < 10; i++){
+            String s = "elemento " + i;
+            assertEquals(list.indexOf(s), i);
+        }
+
+        assertEquals(list.indexOf("prova"), -1);
+    }
+
     private ListAdapter getCollection(){
         ListAdapter l = new ListAdapter();
         for (int i = 0; i < 10; i++) {
