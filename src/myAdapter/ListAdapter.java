@@ -262,19 +262,75 @@ public class ListAdapter implements HList{
         return vector.remove(o);
     }
 
-    @Override
-    public boolean removeAll(HCollection c) {
-        return false;
-    }
+    /**
+     * Removes from this list all the elements that are contained in the specified collection.
+     * @param c - collection that defines which elements will be removed from this list.
+     * @return true if this list changed as a result of the call.
+     * @throws NullPointerException - if the specified collection is null.
+     */
 
     @Override
-    public boolean retainAll(HCollection c) {
-        return false;
+    public boolean removeAll(HCollection c) throws NullPointerException{
+        if (c == null)
+            throw new NullPointerException();
+
+        int counter = 0;
+        Object[] temp = c.toArray();
+        for (int i = 0; i < temp.length; i++){
+            while (contains(temp[i])) {
+                remove(temp[i]);
+                counter++;
+            }
+        }
+
+        if (counter > 0)
+            return true;
+        else
+            return false;
     }
 
+    /**
+     * Retains only the elements in this list that are contained in the specified collection. In other words, removes from this list all the elements that are not contained in the specified collection.
+     * @param c - collection that defines which elements this set will retain.
+     * @return true if this list changed as a result of the call.
+     * @throws NullPointerException - if the specified collection is null.
+     */
+
     @Override
-    public Object set(int index, Object element) {
-        return null;
+    public boolean retainAll(HCollection c) throws NullPointerException{
+        if (c == null)
+            throw new NullPointerException();
+
+        boolean change = false;
+        Object[] temp = toArray();
+        for (int i = 0; i < temp.length; i++)
+            if (!c.contains(temp[i])) {
+                remove(temp[i]);
+                change = true;
+            }
+        return change;
+    }
+
+    /**
+     * Replaces the element at the specified position in this list with the specified element.
+     * @param index - index of element to replace.
+     * @param element - element to be stored at the specified position.
+     * @return the element previously at the specified position.
+     * @throws IndexOutOfBoundsException - if the index is out of range (index < 0 || index >= size()).
+     * @throws NullPointerException - if the specified element is null and this list does not support null elements.
+     */
+
+    @Override
+    public Object set(int index, Object element) throws NullPointerException, IndexOutOfBoundsException{
+        if (index < 0 || index >= size())
+            throw new IndexOutOfBoundsException();
+
+        if (element == null)
+            throw new NullPointerException();
+
+        Object temp = vector.elementAt(index);
+        vector.setElementAt(element, index);
+        return temp;
     }
 
     /**
