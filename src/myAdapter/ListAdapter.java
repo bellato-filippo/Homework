@@ -1,5 +1,6 @@
 package myAdapter;
 
+import java.util.NoSuchElementException;
 import java.util.Vector;
 
 public class ListAdapter implements HList{
@@ -360,8 +361,72 @@ public class ListAdapter implements HList{
         return temp;
     }
 
+    /**
+     * Returns an array containing all of the elements in this list in proper sequence; the runtime type of the returned array is that of the specified array.
+     * @param a - the array into which the elements of this list are to be stored, if it is big enough; otherwise, a new array of the same runtime type is allocated for this purpose.
+     * @return an array containing the elements of this list.
+     * @throws NullPointerException - if the specified array is null.
+     */
+
     @Override
-    public Object[] toArray(Object[] a) {
-        return new Object[0];
+    public Object[] toArray(Object[] a) throws NullPointerException{
+        if (a == null)
+            throw new NullPointerException();
+
+        if (a.length >= size()){
+            vector.copyInto(a);
+            return a;
+        } else {
+            Object[] temp = new Object[size()];
+            vector.copyInto(temp);
+            return temp;
+        }
+    }
+
+    private class IteratorAdapter implements HIterator{
+
+        private int index;
+        private boolean possible;
+
+        public IteratorAdapter(){
+            index = -1;
+            possible = false;
+        }
+
+        /**
+         * Returns true if the iteration has more elements.
+         * @return true if the iterator has more elements.
+         */
+
+        @Override
+        public boolean hasNext() {
+            return (index + 1) < size();
+        }
+
+        /**
+         * Returns the next element in the iteration.
+         * @return the next element in the iteration.
+         * @throws NoSuchElementException - iteration has no more elements.
+         */
+
+        @Override
+        public Object next() throws NoSuchElementException{
+            if(!hasNext())
+                throw new NoSuchElementException();
+            possible = true;
+            return vector.elementAt(index++);
+        }
+
+        /**
+         * Removes from the underlying collection the last element returned by the iterator. This method can be called only once per call to next.
+         * @throws IllegalStateException - if the next method has not yet been called, or the remove method has already been called after the last call to the next method.
+         */
+
+        @Override
+        public void remove() throws IllegalStateException{
+            if (!possible)
+                throw new IllegalStateException();
+            vector.removeElementAt(index - 1);
+        }
     }
 }

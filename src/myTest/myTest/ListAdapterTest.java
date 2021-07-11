@@ -4,6 +4,8 @@ import myAdapter.*;
 import org.junit.Test;
 import org.junit.Before;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class ListAdapterTest {
@@ -253,6 +255,46 @@ public class ListAdapterTest {
 
         assertThrows(IndexOutOfBoundsException.class, () -> {list.set(15, "elemento");});
         assertThrows(NullPointerException.class, () -> {list.set(5, null);});
+    }
+
+    @Test
+    public void testSize(){
+        assertEquals(0, list.size());
+        list.addAll(getCollection());
+        assertEquals(10, list.size());
+        list.remove(1);
+        list.remove(2);
+        assertEquals(8, list.size());
+        list.clear();
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    public void testToArray(){
+        Object[] arr = new Object[10];
+        for (int i = 0; i < arr.length; i++)
+            arr[i] = "elemento " + i;
+        list.addAll(getCollection());
+        Object[] temp = list.toArray();
+        for (int i = 0; i < temp.length; i++)
+            assertEquals(temp[i], arr[i]);
+
+        assertTrue(Arrays.equals(arr, temp));
+    }
+
+    @Test
+    public void testToArrayParameter(){
+        Object[] arr = new Object[10];
+        for (int i = 0; i < arr.length; i++)
+            arr[i] = "elemento " + i;
+        list.addAll(getCollection());
+        Object[] temp = list.toArray();
+        assertTrue(Arrays.equals(arr, temp));
+        Object[] arr1 = new Object[5];
+        Object[] temp1 = list.toArray(arr1);
+        assertTrue(Arrays.equals(temp1, arr));
+
+        assertThrows(NullPointerException.class, () -> {list.toArray(null);});
     }
 
     private ListAdapter getCollection(){
