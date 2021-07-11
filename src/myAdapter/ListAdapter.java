@@ -171,9 +171,26 @@ public class ListAdapter implements HList{
         return vector.elementAt(index);
     }
 
+    /**
+     * Returns the hash code value for this list. The hash code of a list is defined to be the result of the following calculation:
+     *   hashCode = 1;
+     *   Iterator i = list.iterator();
+     *   while (i.hasNext()) {
+     *       Object obj = i.next();
+     *       hashCode = 31*hashCode + (obj==null ? 0 : obj.hashCode());
+     *   }
+     * @return the hash code value for this list.
+     */
+
     @Override
     public int hasCode() {
-        return 0;
+        int hashCode = 1;
+        HIterator i = iterator();
+        while (i.hasNext()) {
+            Object obj = i.next();
+            hashCode = 31*hashCode + (obj==null ? 0 : obj.hashCode());
+        }
+        return hashCode;
     }
 
     /**
@@ -203,7 +220,7 @@ public class ListAdapter implements HList{
 
     @Override
     public HIterator iterator() {
-        return null;
+        return new IteratorAdapter();
     }
 
     /**
@@ -414,7 +431,7 @@ public class ListAdapter implements HList{
             if(!hasNext())
                 throw new NoSuchElementException();
             possible = true;
-            return vector.elementAt(index++);
+            return vector.elementAt(++index);
         }
 
         /**
@@ -426,7 +443,8 @@ public class ListAdapter implements HList{
         public void remove() throws IllegalStateException{
             if (!possible)
                 throw new IllegalStateException();
-            vector.removeElementAt(index - 1);
+            possible = false;
+            vector.removeElementAt(index);
         }
     }
 }

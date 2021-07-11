@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.Before;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
@@ -161,6 +162,14 @@ public class ListAdapterTest {
     }
 
     @Test
+    public void testHashCode(){
+        list.addAll(getCollection());
+        ListAdapter l = new ListAdapter();
+        l.addAll(getCollection());
+        assertEquals(list.hasCode(), l.hasCode());
+    }
+
+    @Test
     public void testIndexOf(){
         list.addAll(getCollection());
         for (int i = 0; i < 10; i++){
@@ -179,6 +188,22 @@ public class ListAdapterTest {
         assertFalse(list.isEmpty());
         list.clear();
         assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void testIterator(){
+        HIterator iter = list.iterator();
+        assertFalse(iter.hasNext());
+        list.addAll(getCollection());
+        assertTrue(iter.hasNext());
+        for (int i = 0; i < 10; i++)
+            assertEquals("elemento " + i, iter.next());
+        assertFalse(iter.hasNext());
+        iter.remove();
+        assertFalse(list.contains("elemento 9"));
+        assertFalse(iter.hasNext());
+        assertThrows(IllegalStateException.class, () -> {iter.remove();});
+        assertThrows(NoSuchElementException.class, () -> {iter.next();});
     }
 
     @Test
