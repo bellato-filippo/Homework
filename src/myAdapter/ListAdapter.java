@@ -220,7 +220,7 @@ public class ListAdapter implements HList{
 
     @Override
     public HIterator iterator() {
-        return new IteratorAdapter();
+        return new IteratorAdapter(this);
     }
 
     /**
@@ -240,12 +240,12 @@ public class ListAdapter implements HList{
 
     @Override
     public HListIterator listIterator() {
-        return null;
+        return new ListIteratorAdapter(this);
     }
 
     @Override
     public HListIterator listIterator(int index) {
-        return null;
+        return new ListIteratorAdapter(this, index);
     }
 
     /**
@@ -402,12 +402,18 @@ public class ListAdapter implements HList{
 
     private class IteratorAdapter implements HIterator{
 
-        private int index;
-        private boolean possible;
+        protected int index;
+        protected boolean possible;
+        protected ListAdapter list;
 
-        public IteratorAdapter(){
-            index = -1;
+        public IteratorAdapter(ListAdapter l){
+            this(l, -1);
+        }
+
+        public IteratorAdapter(ListAdapter l, int ind){
+            this.index = ind;
             possible = false;
+            list = l;
         }
 
         /**
@@ -417,7 +423,7 @@ public class ListAdapter implements HList{
 
         @Override
         public boolean hasNext() {
-            return (index + 1) < size();
+            return (index + 1) < list.size();
         }
 
         /**
@@ -431,7 +437,7 @@ public class ListAdapter implements HList{
             if(!hasNext())
                 throw new NoSuchElementException();
             possible = true;
-            return vector.elementAt(++index);
+            return list.get(++index);
         }
 
         /**
@@ -444,7 +450,146 @@ public class ListAdapter implements HList{
             if (!possible)
                 throw new IllegalStateException();
             possible = false;
-            vector.removeElementAt(index);
+            list.remove(index--);
+        }
+    }
+
+
+    private class ListIteratorAdapter extends IteratorAdapter implements HListIterator{
+
+        private int last;
+
+        public ListIteratorAdapter(ListAdapter l){
+            super(l);
+            last = -1;
+        }
+
+        public ListIteratorAdapter(ListAdapter l, int ind){
+            super(l, ind);
+            last = -1;
+        }
+
+        /**
+         * Inserts the specified element into the list. The element is inserted immediately before the next element that would be returned by next, if any, and after the next element that would be returned by previous, if any.
+         * @param o - the element to insert.
+         * @throws IllegalArgumentException - if some aspect of this element prevents it from being added to this list.
+         */
+
+        @Override
+        public void add(Object o) throws IllegalArgumentException{
+            if (o == null)
+                throw new IllegalArgumentException();
+
+            list.add(++index, o);
+        }
+
+        /**
+         * Returns true if this list iterator has more elements when traversing the list in the forward direction.
+         * @return true if the list iterator has more elements when traversing the list in the forward direction.
+         */
+
+        @Override
+        public boolean hasNext() {
+            return super.hasNext();
+        }
+
+        /**
+         * Returns true if this list iterator has more elements when traversing the list in the reverse direction.
+         * @return true if the list iterator has more elements when traversing the list in the reverse direction.
+         */
+
+        @Override
+        public boolean hasPrevious() {
+            return index >= 0;
+        }
+
+        /**
+         * Returns the next element in the list.
+         * @return the next element in the list.
+         * @throws NoSuchElementException - if the iteration has no next element.
+         */
+
+        @Override
+        public Object next() throws NoSuchElementException{
+            if (!hasNext())
+                throw new NoSuchElementException();
+            last = index + 1;
+            return super.next();
+        }
+
+        /**
+         * Returns the index of the element that would be returned by a subsequent call to next.
+         * @return the index of the element that would be returned by a subsequent call to next, or list size if list iterator is at end of list.
+         */
+
+        @Override
+        public int nextIndex() {
+            if (hasNext())
+                return index + 1;
+            else
+                return list.size();
+        }
+
+        /**
+         * Returns the previous element in the list.
+         * @return the previous element in the list.
+         * @throws NoSuchElementException - if the iteration has no previous element.
+         */
+
+        @Override
+        public Object previous() throws NoSuchElementException{
+            if (!hasPrevious())
+                throw new NoSuchElementException();
+            last = index;
+            possible = true;
+            return list.get(index--);
+        }
+
+        /**
+         * Returns the index of the element that would be returned by a subsequent call to previous.
+         * @return the index of the element that would be returned by a subsequent call to previous, or -1 if list iterator is at beginning of list.
+         */
+
+        @Override
+        public int previousIndex() {
+            if (hasPrevious())
+                return index - 1;
+            else
+                return -1;
+        }
+
+        /**
+         * Removes from the list the last element that was returned by next or previous. This call can only be made once per call to next or previous.
+         * @throws IllegalStateException - neither next nor previous have been called, or remove or add have been called after the last call to * next or previous.
+         */
+
+        @Override
+        public void remove() throws IllegalStateException{
+            if (!possible)
+                throw new IllegalStateException();
+
+            possible = false;
+            list.remove(last);
+            last = -1;
+        }
+
+        /**
+         * Replaces the last element returned by next or previous with the specified element.
+         * @param o - the element with which to replace the last element returned by next or previous.
+         * @throws IllegalArgumentException - if some aspect of the specified element prevents it from being added to this list.
+         * @throws IllegalStateException - if neither next nor previous have been called, or remove or add have been called after the last call to next or previous.
+         */
+
+        @Override
+        public void set(Object o) throws IllegalStateException, IllegalArgumentException{
+            if (!possible)
+                throw new IllegalStateException();
+
+            if (o == null)
+                throw new IllegalArgumentException();
+
+            possible = false;
+            list.set(last, o);
         }
     }
 }

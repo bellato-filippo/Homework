@@ -202,8 +202,15 @@ public class ListAdapterTest {
         iter.remove();
         assertFalse(list.contains("elemento 9"));
         assertFalse(iter.hasNext());
+
         assertThrows(IllegalStateException.class, () -> {iter.remove();});
         assertThrows(NoSuchElementException.class, () -> {iter.next();});
+
+        HIterator iter1 = list.iterator();
+        assertThrows(IllegalStateException.class, () -> {iter1.remove();});
+        Object temp = iter1.next();
+        iter1.remove();
+        assertFalse(list.contains(temp));
     }
 
     @Test
@@ -321,6 +328,8 @@ public class ListAdapterTest {
 
         assertThrows(NullPointerException.class, () -> {list.toArray(null);});
     }
+
+
 
     private ListAdapter getCollection(){
         ListAdapter l = new ListAdapter();
