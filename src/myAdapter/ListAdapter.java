@@ -455,6 +455,7 @@ public class ListAdapter implements HList{
     }
 
 
+
     private class ListIteratorAdapter extends IteratorAdapter implements HListIterator{
 
         private int last;

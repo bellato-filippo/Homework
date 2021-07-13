@@ -213,6 +213,7 @@ public class ListAdapterTest {
         assertFalse(list.contains(temp));
     }
 
+
     @Test
     public void testLastIdexOf(){
         list.addAll(getCollection());
