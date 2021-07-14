@@ -696,9 +696,8 @@ public class ListAdapter implements HList{
 
         @Override
         public void clear() {
-            for (int i = from; i < to; i++)
-                ListAdapter.this.remove(i + from);
-            to = from + 1;
+            while (to > from)
+                remove(to - from -1);
         }
 
         /**
@@ -713,9 +712,12 @@ public class ListAdapter implements HList{
             if (o == null)
                 throw new NullPointerException();
 
-            for (int i = from; i < to; i++)
-                if (ListAdapter.this.get(i + from).equals(o))
+            int counter = 0;
+            while (counter < size()){
+                if (ListAdapter.this.get(from + counter).equals(o))
                     return true;
+                counter++;
+            }
             return false;
         }
 
@@ -847,14 +849,12 @@ public class ListAdapter implements HList{
         public int lastIndexOf(Object o) throws NullPointerException{
             if (o == null)
                 throw new NullPointerException();
-            HIterator it = iterator();
-            int index = 0;
+
             int lastIndex = -1;
-            while (it.hasNext()) {
-                if (it.next().equals(o))
-                    lastIndex = index;
-                index++;
-            }
+            Object[] temp = toArray();
+            for (int i = 0; i < temp.length; i++)
+                if(temp[i].equals(o))
+                    lastIndex = i;
             return lastIndex;
         }
 
@@ -952,12 +952,14 @@ public class ListAdapter implements HList{
             if (c == null)
                 throw new NullPointerException();
 
-            HIterator it = c.iterator();
-            int size = size();
-            while (it.hasNext())
-                if(!c.contains(it.next()))
-                    it.remove();
-            return size != size();
+            boolean change = false;
+            Object[] temp = toArray();
+            for (int i = 0; i < temp.length; i++)
+                if (!c.contains(temp[i])) {
+                    remove(temp[i]);
+                    change = true;
+                }
+            return change;
         }
 
         /**

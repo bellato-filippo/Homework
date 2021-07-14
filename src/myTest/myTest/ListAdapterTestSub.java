@@ -9,13 +9,16 @@ import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
-public class ListAdapterTest {
+public class ListAdapterTestSub {
 
-    private ListAdapter list;
+    private ListAdapter l1;
+    private HList list;
 
     @Before
     public void setUp(){
-        list = new ListAdapter();
+        l1 = new ListAdapter();
+        l1.addAll(getCollection());
+        list = l1.subList(5, 5);
     }
 
     @Test
@@ -39,6 +42,7 @@ public class ListAdapterTest {
         assertEquals(0, list.indexOf("elemento 1"));
         assertEquals(1, list.indexOf("elemento 2"));
         assertEquals(2, list.indexOf("elemento 3"));
+        assertEquals(13, l1.size());
 
         assertThrows(NullPointerException.class, () -> {list.add(null);});
     }
@@ -60,6 +64,7 @@ public class ListAdapterTest {
         list.add(3, "elemento 4");
         assertEquals("elemento 4", list.get(3));
         assertEquals(4, list.size());
+        assertEquals(14, l1.size());
 
         assertThrows(IndexOutOfBoundsException.class, () -> {list.add(-1, "oggetto");});
         assertThrows(IndexOutOfBoundsException.class, () -> {list.add(5, "oggetto");});
@@ -72,9 +77,11 @@ public class ListAdapterTest {
         assertThrows(NullPointerException.class, () -> {list.addAll(null);});
         assertTrue(list.addAll(col));
         assertEquals(10, list.size());
+        assertEquals(20, l1.size());
         for (int i = 0; i < 10; i++)
             assertEquals("elemento " + i, list.get(i));
         list.clear();
+        assertEquals(10, l1.size());
         assertTrue(list.add("elemento a"));
         assertTrue(list.add("elemento b"));
         assertTrue(list.add("elemento c"));
@@ -92,6 +99,7 @@ public class ListAdapterTest {
         assertTrue(list.add("elemento a"));
         assertTrue(list.add("elemento b"));
         assertTrue(list.add("elemento c"));
+        assertEquals(13, l1.size());
         ListAdapter col1 = new ListAdapter();
         assertFalse(list.addAll(col1));
 
@@ -102,6 +110,7 @@ public class ListAdapterTest {
         assertEquals("elemento 9", list.get(10));
         assertEquals("elemento b", list.get(11));
         assertEquals("elemento c", list.get(12));
+        assertEquals(23, l1.size());
 
         assertThrows(NullPointerException.class, () -> {list.addAll(null);});
         assertThrows(IndexOutOfBoundsException.class, () -> {list.addAll(25, col);});
@@ -111,10 +120,13 @@ public class ListAdapterTest {
     public void testClear(){
         assertTrue(list.isEmpty());
         assertEquals(0, list.size());
+        assertEquals(10, l1.size());
         list.clear();
+        assertEquals(10, l1.size());
         assertEquals(0, list.size());
         list.add("elemento");
         assertEquals(1, list.size());
+        assertEquals(11, l1.size());
         list.clear();
         assertEquals(0, list.size());
     }
@@ -127,6 +139,7 @@ public class ListAdapterTest {
         list.add("elemento 3");
         assertTrue(list.contains("elemento 2"));
         assertFalse(list.contains("elemento 4"));
+        assertEquals(7, l1.lastIndexOf("elemento 3"));
         assertThrows(NullPointerException.class, () -> {list.contains(null);});
     }
 
@@ -166,16 +179,17 @@ public class ListAdapterTest {
 
     @Test
     public void testHashCode(){
+        HList l2 = l1.subList(5, 5);
         list.addAll(getCollection());
-        ListAdapter l = new ListAdapter();
-        l.addAll(getCollection());
-        assertEquals(list.hasCode(), l.hasCode());
+        l2.addAll(getCollection());
+        assertEquals(list.hasCode(), l2.hasCode());
     }
 
     @Test
     public void testIndexOf(){
         list.addAll(getCollection());
         list.addAll(getCollection());
+        assertEquals(30, l1.size());
         for (int i = 0; i < 10; i++){
             String s = "elemento " + i;
             assertEquals(i, list.indexOf(s));
@@ -222,6 +236,7 @@ public class ListAdapterTest {
     @Test
     public void testLastIdexOf(){
         list.addAll(getCollection());
+        assertTrue(list.contains("elemento 0"));
         assertEquals(0, list.lastIndexOf("elemento 0"));
         list.add("elemento 0");
         assertEquals(10, list.lastIndexOf("elemento 0"));
@@ -262,6 +277,7 @@ public class ListAdapterTest {
         list.addAll(getCollection());
         assertEquals(10, list.size());
         assertEquals("elemento 4", list.remove(4));
+        assertEquals(19, l1.size());
         assertEquals(9, list.size());
         assertFalse(list.contains("elemento 4"));
 
@@ -272,6 +288,7 @@ public class ListAdapterTest {
     public void testRemove(){
         list.addAll(getCollection());
         assertTrue(list.remove("elemento 0"));
+        assertEquals(19, l1.size());
         assertFalse(list.contains("elemento 0"));
         assertEquals(0, list.indexOf("elemento 1"));
         assertFalse(list.remove("elemento"));
@@ -288,6 +305,7 @@ public class ListAdapterTest {
         l.add("elemento 5");
         l.add("elemento 6");
         assertTrue(list.removeAll(l));
+        assertEquals(17, l1.size());
         assertFalse(list.contains("elemento 5"));
         assertEquals(4, list.indexOf("elemento 7"));
         assertFalse(list.removeAll(l));
@@ -304,6 +322,7 @@ public class ListAdapterTest {
         l.add("elemento 5");
         l.add("elemento 6");
         assertTrue(list.retainAll(l));
+        assertEquals(13, l1.size());
         assertFalse(list.contains("elemento 0"));
         assertEquals(3, list.size());
         assertFalse(list.retainAll(l));
@@ -318,6 +337,7 @@ public class ListAdapterTest {
         assertEquals(10, list.size());
         assertFalse(list.contains("elemento 0"));
         assertTrue(list.contains("nuovo elemento"));
+        assertEquals(20, l1.size());
 
         assertThrows(IndexOutOfBoundsException.class, () -> {list.set(15, "elemento");});
         assertThrows(NullPointerException.class, () -> {list.set(5, null);});
@@ -330,6 +350,7 @@ public class ListAdapterTest {
         assertEquals(10, list.size());
         list.remove(1);
         list.remove(2);
+        assertEquals(18, l1.size());
         assertEquals(8, list.size());
         list.clear();
         assertEquals(0, list.size());
@@ -362,7 +383,6 @@ public class ListAdapterTest {
 
         assertThrows(NullPointerException.class, () -> {list.toArray(null);});
     }
-
 
     private ListAdapter getCollection(){
         ListAdapter l = new ListAdapter();

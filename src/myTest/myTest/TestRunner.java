@@ -1,24 +1,19 @@
 package myTest;
 
-import myAdapter.ListAdapter;
-import org.junit.Test;
-import org.junit.Before;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 
-import static org.junit.Assert.*;
 
 
 public class TestRunner {
-    ListAdapter list;
-
-    @Before
-    public void setUp(){
-        list = new ListAdapter();
+    public static void main(String[] args) {
+        Result result = JUnitCore.runClasses(myTest.ListAdapterTest.class);
+        for (Failure failure : result.getFailures()) {
+            System.out.println(failure.toString());
+        }
+        System.out.println(result.wasSuccessful());
+        System.out.println("Total tests run: 61.");
+        System.out.println("End of the suite ListAdapterTester. Proceeding with the next one.\n");
     }
-
-
-    @Test
-    public void testAdd() {
-        assertEquals(4, 4);
-    }
-
 }
