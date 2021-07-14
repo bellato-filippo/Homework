@@ -59,6 +59,7 @@ public class ListAdapterTest {
         assertEquals(2, list.indexOf("elemento 2"));
         list.add(3, "elemento 4");
         assertEquals("elemento 4", list.get(3));
+        assertEquals(4, list.size());
 
         assertThrows(IndexOutOfBoundsException.class, () -> {list.add(-1, "oggetto");});
         assertThrows(IndexOutOfBoundsException.class, () -> {list.add(5, "oggetto");});
@@ -95,6 +96,7 @@ public class ListAdapterTest {
         assertFalse(list.addAll(col1));
 
         assertTrue(list.addAll(1, col));
+        assertEquals(13, list.size());
         assertEquals("elemento a", list.get(0));
         assertEquals("elemento 0", list.get(1));
         assertEquals("elemento 9", list.get(10));
@@ -139,6 +141,7 @@ public class ListAdapterTest {
         assertTrue(list.containsAll(l));
         l.add("elemento 15");
         assertFalse(list.containsAll(l));
+        assertThrows(NullPointerException.class, () -> {list.containsAll(null);});
     }
 
     @Test
@@ -172,6 +175,7 @@ public class ListAdapterTest {
     @Test
     public void testIndexOf(){
         list.addAll(getCollection());
+        list.addAll(getCollection());
         for (int i = 0; i < 10; i++){
             String s = "elemento " + i;
             assertEquals(i, list.indexOf(s));
@@ -187,6 +191,7 @@ public class ListAdapterTest {
         list.add("elemento");
         assertFalse(list.isEmpty());
         list.clear();
+        assertEquals(0, list.size());
         assertTrue(list.isEmpty());
     }
 
@@ -226,6 +231,33 @@ public class ListAdapterTest {
     }
 
     @Test
+    public void testListIterator(){
+        list.addAll(getCollection());
+        HListIterator it = list.listIterator();
+        assertEquals(0, it.nextIndex());
+        assertTrue(it.hasNext());
+        assertFalse(it.hasPrevious());
+        assertThrows(NoSuchElementException.class, () -> {it.previous();});
+        assertThrows(IllegalArgumentException.class, () -> {it.add(null);});
+        assertThrows(IllegalStateException.class, () -> {it.remove();});
+        for (int i = 0; i < 10; i++){
+            assertEquals("elemento " + i, it.next());
+        }
+        assertFalse(it.hasNext());
+        assertTrue(it.hasPrevious());
+
+        for (int i = 9; i > -1; i--)
+            assertEquals("elemento " + i, it.previous());
+
+        it.add("nuovo elemento");
+        assertEquals(11, list.size());
+        assertThrows(IllegalStateException.class, () -> {it.remove();});
+        it.next();
+        it.set("elemento 10");
+        assertEquals(11, list.size());
+    }
+
+    @Test
     public void testRemoveIndex(){
         list.addAll(getCollection());
         assertEquals(10, list.size());
@@ -243,6 +275,7 @@ public class ListAdapterTest {
         assertFalse(list.contains("elemento 0"));
         assertEquals(0, list.indexOf("elemento 1"));
         assertFalse(list.remove("elemento"));
+        assertEquals(9, list.size());
 
         assertThrows(NullPointerException.class, () -> {list.remove(null);});
     }
@@ -329,6 +362,9 @@ public class ListAdapterTest {
 
         assertThrows(NullPointerException.class, () -> {list.toArray(null);});
     }
+
+
+
 
 
 
